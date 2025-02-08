@@ -154,7 +154,7 @@ function draw() {
     
     // Se a bola estiver acelerada (seta para baixo pressionada), aumenta a aceleração
     if (ball.accelerated) {
-        ball.dy += ball.acceleration * 2;  // Aplica uma aceleração extra
+        ball.dy += ball.acceleration * 3;  // Aplica uma aceleração extra
     } else {
         ball.dy += ball.acceleration;      // Aplica a aceleração padrão (gravidade)
     }
@@ -181,14 +181,14 @@ function draw() {
         //se a bola estiver caindo (dy > 0)
         //e a parte inferior da bola alcançar o topo do retangulo fixado(r.y)
         //e a bola estiver dentro dos limites horizontais de r:
-        if (ball.y + ball.radius >= r.y &&
+        if (ball.y + ball.radius >= r.y + 2 &&
             ball.x >= r.x &&
             ball.x <= r.x + r.width &&
             ball.dy > 0) {
             //ajusta a posição da bola para que ela "respouse" sobre o retangulo
             ball.y = r.y - ball.radius;
             //Inverte a velocidaddde vertical com amortecimento para simular o quique
-            ball.y = r.y - ball.dy * 0.9;
+            ball.dy = - ball.dy * 0.9;
             //para teste: interrompe o loop, pois a colisão foi tratada
             break;
 
