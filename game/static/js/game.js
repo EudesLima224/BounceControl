@@ -175,7 +175,25 @@ function draw() {
         // Inverte a velocidade vertical (faz a bola quicar) e aplica um fator de amortecimento (aqui 0.9)
         ball.dy = -ball.dy * 0.9;
     }
-    
+    //verifica a colisão da bola  com os retangulos fixados:
+    for (let i = 0; i < fixedRects.length; i++) {
+        let r = fixedRects[i];
+        //se a bola estiver caindo (dy > 0)
+        //e a parte inferior da bola alcançar o topo do retangulo fixado(r.y)
+        //e a bola estiver dentro dos limites horizontais de r:
+        if (ball.y + ball.radius >= r.y &&
+            ball.x >= r.x &&
+            ball.x <= r.x + r.width &&
+            ball.dy > 0) {
+            //ajusta a posição da bola para que ela "respouse" sobre o retangulo
+            ball.y = r.y - ball.radius;
+            //Inverte a velocidaddde vertical com amortecimento para simular o quique
+            ball.y = r.y - ball.dy * 0.9;
+            //para teste: interrompe o loop, pois a colisão foi tratada
+            break;
+
+            }
+    }
     // Se a bola atingir o topo do canvas, inverte a velocidade vertical (para evitar que saia pela parte superior)
     if (ball.y - ball.radius < 0) {
         ball.y = ball.radius;
