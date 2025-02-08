@@ -2,6 +2,11 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+
+///variavel global para alternar o lado do spawn
+let spawnLeft = true;
+
+
 // --------------------------------------------
 // Definição dos objetos do jogo
 // --------------------------------------------
@@ -34,17 +39,44 @@ let currentRect = {
 // Ele começará acima do retângulo fixado anterior
 function createNewRect() {
     // Se for o primeiro retângulo, começamos do mesmo ponto base
-    // Caso contrário, posicionamos o novo retângulo acima do último fixado.
-    let newY = (fixedRects.length === 0) ? canvas.height - 50 : fixedRects[fixedRects.length - 1].y - 50;
+    // Caso contrário, posicionamos o novo retângulo 20 pixel(largura dele) acima do último fixado.
+    let newY = (fixedRects.length === 0) ? canvas.height - 50 : fixedRects[fixedRects.length - 1].y - 20;
     
+
+    // Define a posição horizontal com base no valor spawnLeft:
+    let newX, newSpeed;
+    if (spawnLeft){
+        newX = 0; //Nasce no canto esquerdo
+        newSpeed = 3; // vai em direção a direita
+    }else{
+        newX = canvas.width - currentRect.width;
+        newSpeed = -3 // vai em direção a lado esquerdo
+    }
+
+    //alterna para o próximo spawn
+    spawnLeft = !spawnLeft;
+
+    //cria o novo retangulo
     currentRect = {
-        x: canvas.width / 2 - 75,  // Centralizado inicialmente
+        x: newX,
         y: newY,
         width: currentRect.width, // Começa com a mesma largura que o anterior
         height: 20,
-        speed: 3,
+        speed: newSpeed,
         fixed: false
     };
+}
+
+//-----------------------
+//Camera
+//-----------------------
+function shiftCamera(delta) {
+    // Para cada retângulo fixado, subtrai 'delta' de sua coordenada y
+    for (let i = 0; i < fixedRects.length; i++) {
+        fixedRects[i].y += delta;
+    }
+    // Também move o retângulo atual para cima
+    currentRect.y += delta;
 }
 
 
@@ -91,13 +123,14 @@ document.addEventListener('keydown', function(event) {
             fixedRects.push({ ...currentRect });
             
             // Em seguida, movemos a "câmera" para cima (veremos isso no próximo passo)
-            shiftCamera(50);  // por exemplo, 50 pixels para cima
+            shiftCamera(15);  // por exemplo, 50 pixels para cima
             
             // Cria um novo retângulo para o próximo nível
             createNewRect();
         }
     }
 });
+
 
 
 // Evento para quando a tecla é liberada (para a seta para baixo)
